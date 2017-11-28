@@ -1,0 +1,130 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    <h2>Controller Assignments</h2>
+    <div class="form-group">
+        <select class="form-control controllers" style="display:inline;width:auto">
+            <option selected hidden disabled>Choose Controller...</option>
+            <option value="1">Controller 1</option>
+            <option value="2">Controller 2</option>
+            <option value="3">Controller 3</option>
+        </select>
+        <span> Will Check Out </span>
+        <select class="form-control tables" style="display:inline;width:auto">
+            <option selected hidden disabled>Choose Table...</option>
+            <option value="Users">Users</option>
+            <option value="Postings">Postings</option>
+            <option value="Friends">Friends</option>
+        </select>
+    </div>
+
+    <div class="form-group" style="display:none">
+        <select class="form-control controllers" style="display:inline;width:auto">
+        </select>
+        <span> Will Check Out </span>
+        <select class="form-control tables" style="display:inline;width:auto">
+        </select>
+    </div>
+
+    <div class="form-group" style="display:none">
+        <select class="form-control controllers" style="display:inline;width:auto">
+        </select>
+        <span> Will Check Out </span>
+        <select class="form-control tables" style="display:inline;width:auto">
+        </select>
+    </div>
+    <button type="submit" id="submit" class="btn btn-success">Submit</button>
+    <button type="submit" id="reset" class="btn btn-primary">Reset</button>
+}
+
+<script>
+    $(document).ready(function () {
+        $('#submit').click(function () {
+            $('.form-group').each(function (i, element) {
+                var controller = $(element).find('.controllers').val();
+                var table = $(element).find('.tables').val();
+                if (controller && table) {
+                    var data = {
+                        controllerNum: controller,
+                        table: table
+                    };
+                    $.ajax({
+                        url: '@Url.Action("GetTables", "Process")',
+                        type: 'POST',
+                        contentType: "application/json; charset=UTF-8",
+                        dataType: 'json',
+                        cache: false,
+                        processData: false,
+                        data: JSON.stringify(data),
+                        success: function (data) {
+                            console.log(data.success);
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#reset').click(function () {
+            db.ref().set({
+                "tables": {
+                    "Users": true,
+                    "Postings": true,
+                    "Friends": true
+                },
+                "controller1": {
+                    "data": { "Users": false, "Postings": false, "Friends": false },
+                    "deadlock": false,
+                    "dependent": { "controller1": false, "controller2": false, "controller3": false }
+                },
+                "controller2": {
+                    "data": { "Users": false, "Postings": false, "Friends": false },
+                    "deadlock": false,
+                    "dependent": { "controller1": false, "controller2": false, "controller3": false }
+                },
+                "controller3": {
+                    "data": { "Users": false, "Postings": false, "Friends": false },
+                    "deadlock": false,
+                    "dependent": { "controller1": false, "controller2": false, "controller3": false }
+                }
+            });
+        });
+
+        $('.controllers').change(function (e) {
+            var sibling = $(e.target).siblings().not($('span'));
+
+            if ($(sibling).val()) {
+                $(e.target).parent().next().fadeIn();
+            }
+
+            var nextController = $(e.target).parent().next().find('.controllers');
+            $(nextController).empty();
+            $(e.target).children().each(function (i, element) {
+                if (!$(element).is(':selected')) {
+                    $(nextController).append($(element).clone());
+                }
+            });
+        });
+
+        $('.tables').change(function (e) {
+            var sibling = $(e.target).siblings().not($('span'));
+
+            if ($(sibling).val()) {
+                $(e.target).parent().next().fadeIn();
+            }
+
+            var nextTable = $(e.target).parent().next().find('.tables');
+            $(nextTable).empty();
+            $(e.target).children().each(function (i, element) {
+                if (!$(element).is(':selected')) {
+                    $(nextTable).append($(element).clone());
+                }
+            });
+        });
+    });
+</script>

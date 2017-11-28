@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Chandy-Misra-HaasAlgorithm\Database.csproj", "{9EF6B6BE-E124-4132-A393-DB320F3FC5A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "Chandy-Misra-HaasAlgorithm\Database.csproj", "{9EF6B6BE-E124-4132-A393-DB320F3FC5A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controller1", "Controller1\Controller1.csproj", "{56DEF954-3B21-4E8B-8992-2F2AD8A7786E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controller1", "Controller1\Controller1.csproj", "{56DEF954-3B21-4E8B-8992-2F2AD8A7786E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controller2", "Controller2\Controller2.csproj", "{AE833ED0-6433-4A32-B1A9-890E885471A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controller2", "Controller2\Controller2.csproj", "{AE833ED0-6433-4A32-B1A9-890E885471A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controller3", "Controller3\Controller3.csproj", "{C726BFD8-5857-418C-B4D7-F50A0BC46C21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controller3", "Controller3\Controller3.csproj", "{C726BFD8-5857-418C-B4D7-F50A0BC46C21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{6867E9CF-D545-42F5-9050-07C30A338029}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{6867E9CF-D545-42F5-9050-07C30A338029}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChandyMishra", "ChandyMishra\ChandyMishra.csproj", "{D73C11A1-981C-4A31-8457-62E25E86BF99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{6867E9CF-D545-42F5-9050-07C30A338029}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6867E9CF-D545-42F5-9050-07C30A338029}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6867E9CF-D545-42F5-9050-07C30A338029}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D73C11A1-981C-4A31-8457-62E25E86BF99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D73C11A1-981C-4A31-8457-62E25E86BF99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D73C11A1-981C-4A31-8457-62E25E86BF99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D73C11A1-981C-4A31-8457-62E25E86BF99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,48 @@
+﻿@model ChandyMishra.Models.ProcessModel
+
+<h2>Controller @Model.ControllerNum</h2>
+
+<h3>Deadlock: </h3>
+<p id="deadlock"></p>
+<h3 id="dependent">Dependent: </h3>
+<table class="table table-striped table-bordered" style="width:100%">
+    <tr class="header">
+        <th>Controller 1</th>
+        <th>Controller 2</th>
+        <th>Controller 3</th>
+    </tr>
+    <tr id="dependents">
+        <td>Controller 1</td>
+        <td>Controller 2</td>
+        <td>Controller 3</td>
+    </tr>
+</table>
+<h3>Data: </h3>
+<table id="data" class="table table-striped table-bordered" style="width:100%">
+    <tr class="header">
+        <th>Tables Checked Out</th>
+    </tr>
+</table>
+
+<script>
+    var num = @Model.ControllerNum;
+
+    db.ref(`/controller${num}/`).on('value', function (snapshot) {
+        UpdateData(snapshot.val());
+    });
+
+    function UpdateData(snap) {
+        $('#deadlock').hide().empty().append(`${snap.deadlock}`).fadeIn('slow');
+
+        var depTable = `<td>${snap.dependent.controller1}</td>
+                        <td>${snap.dependent.controller2}</td>
+                        <td>${snap.dependent.controller3}</td>`
+
+        $('#dependents').hide().empty().append(depTable).fadeIn('slow');
+
+        $('#data').find('*').not('.header').remove();
+        for (var prop in snap.data) {
+            $('#data tr:last').after(`<tr><td>${snap.data[prop]}</td></tr>`)
+        }
+    }
+</script>
