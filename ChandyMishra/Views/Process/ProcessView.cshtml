@@ -1,48 +1,45 @@
-﻿@model ChandyMishra.Models.ProcessModel
+﻿@model ChandyMishra.Models.ControllersModel
 
-<h2>Controller @Model.ControllerNum</h2>
+<h2>All Controllers</h2>
 
-<h3>Deadlock: </h3>
-<p id="deadlock"></p>
-<h3 id="dependent">Dependent: </h3>
-<table class="table table-striped table-bordered" style="width:100%">
-    <tr class="header">
-        <th>Controller 1</th>
-        <th>Controller 2</th>
-        <th>Controller 3</th>
-    </tr>
-    <tr id="dependents">
-        <td>Controller 1</td>
-        <td>Controller 2</td>
-        <td>Controller 3</td>
-    </tr>
-</table>
-<h3>Data: </h3>
-<table id="data" class="table table-striped table-bordered" style="width:100%">
-    <tr class="header">
-        <th>Tables Checked Out</th>
-    </tr>
-</table>
+<div class="row" id="mainContent">
+    @if (Model.Controllers != null)
+    {
+        <p>No Controllers Created Yet!</p>
+    }
+    else
+    {
+        foreach (string controller in Model.Controllers)
+        {
+            @await Component.InvokeAsync("Controller", controller)
+        }
+    }
+</div>
 
 <script>
-    var num = @Model.ControllerNum;
-
-    db.ref(`/controller${num}/`).on('value', function (snapshot) {
+    db.ref('/controllers/').on('value', function (snapshot) {
         UpdateData(snapshot.val());
     });
 
     function UpdateData(snap) {
-        $('#deadlock').hide().empty().append(`${snap.deadlock}`).fadeIn('slow');
-
-        var depTable = `<td>${snap.dependent.controller1}</td>
-                        <td>${snap.dependent.controller2}</td>
-                        <td>${snap.dependent.controller3}</td>`
-
-        $('#dependents').hide().empty().append(depTable).fadeIn('slow');
-
-        $('#data').find('*').not('.header').remove();
-        for (var prop in snap.data) {
-            $('#data tr:last').after(`<tr><td>${snap.data[prop]}</td></tr>`)
+        $('#mainContent').empty();
+        if (Object.keys(snap).length === 0) {
+            $('#mainContent').html('<p>No Controllers Created Yet!</p>');
+        } else {
+            Object.keys(snap).forEach(function (key, index) {
+                $.ajax({
+                    url: '@Url.Action("NewController", "Process")',
+                    type: 'GET',
+                    contentType: "application/json; charset=UTF-8",
+                    data: { controllerName: key },
+                    success: function (data) {
+                        $('#mainContent').append(data);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+            });
         }
     }
 </script>

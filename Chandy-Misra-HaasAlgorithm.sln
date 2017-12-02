@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controller3", "Controller3\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{6867E9CF-D545-42F5-9050-07C30A338029}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChandyMishra", "ChandyMishra\ChandyMishra.csproj", "{D73C11A1-981C-4A31-8457-62E25E86BF99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChandyMishra", "ChandyMishra\ChandyMishra.csproj", "{D73C11A1-981C-4A31-8457-62E25E86BF99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

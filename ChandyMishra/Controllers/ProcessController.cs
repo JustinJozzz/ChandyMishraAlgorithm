@@ -18,45 +18,65 @@ namespace ChandyMishra.Controllers
 {
     public class ProcessController : Controller
     {
+        private static FirebaseClient firebase = new FirebaseClient("https://chandymishra-74bcd.firebaseio.com/");
         [HttpGet]
-        [Route("process/{controllerNum?}")]
-        public IActionResult Index(string controllerNum)
+        public async Task<IActionResult> Index()
         {
-            ProcessModel model = new ProcessModel(controllerNum);
+            var controllers= await firebase.Child("controllers").OnceAsync<ControllersModel>();
+
+            ControllersModel model = new ControllersModel()
+            {
+                Controllers = new List<string>()
+            };
+            foreach (var controller in controllers)
+            {
+                model.Controllers.Add(controller.Key);
+            }
+
             return View("ProcessView", model);
         }
         [HttpPost]
-        public async void GetTables([FromBody]TableModel model)
+        public async void AssignTables([FromBody]Dictionary<string, string> Assignments)
         {
-            var firebase = new FirebaseClient("https://chandymishra-74bcd.firebaseio.com/");
-            var tables = await firebase.Child("tables").OnceAsync<Boolean>();
-            var dependent = await firebase.Child($"controller{model.controllerNum}").Child("dependent").OnceAsync<Boolean>();
-
-            bool available = tables.Where(x => x.Key == model.table).FirstOrDefault().Object;
-            if(available)
+            var allControllers = await firebase.Child("controllers").OnceSingleAsync<Dictionary<string, ControllerModel>>();
+            foreach (KeyValuePair<string, string> entry in Assignments)
             {
-                await firebase.Child("tables").Child(model.table).PutAsync(false);
-                await firebase.Child($"controller{model.controllerNum}").Child("data").Child(model.table).PutAsync(true);
-            }
-            else
-            {
-                for (int i = 1; i <= 3; i++)
+                bool tableAvailable = await firebase.Child("tables").Child($"{entry.Value}").OnceSingleAsync<bool>();
+                if(tableAvailable)
                 {
-                    Probe(new ProbeModel(i.ToString(), model.table, model.controllerNum, dependent.Where(x => x.Key == $"controller{i}").FirstOrDefault().Object));
+                    var tablesOwned = allControllers[entry.Key].TablesOwned ?? new List<string>();
+                    tablesOwned.Add(entry.Value);
+                    await firebase.Child("controllers").Child($"{entry.Key}").Child("tablesOwned").PutAsync(tablesOwned.ToArray());
+                    await firebase.Child("tables").Child($"{entry.Value}").PutAsync(false);
+                }
+                else
+                {
+                    var dependent = allControllers[entry.Key].Dependent ?? new List<string>();
+
+                    foreach(var controller in allControllers)
+                    {
+                        Probe(new ProbeModel(controller.Key, entry.Value, entry.Key, dependent.Contains(controller.Key)));
+                    }
                 }
             }
         }
+        [HttpGet]
+        public IActionResult NewController(string ControllerName)
+        {
+            return ViewComponent("Controller", ControllerName);
+        }
         public async void Probe(ProbeModel model)
         {
-            var firebase = new FirebaseClient("https://chandymishra-74bcd.firebaseio.com/");
-            var tables = await firebase.Child($"controller{model.ControllerNum}").Child("data").OnceAsync<Boolean>();
-            var dependent = await firebase.Child($"controller{model.ControllerNum}").Child("data").OnceAsync<Boolean>();
+            var controller = await firebase.Child("controllers").Child($"{model.ControllerName}").OnceSingleAsync<ControllerModel>();
+            var tablesOwned = controller.TablesOwned ?? new List<string>();
 
-            if (tables.Where(x => x.Key == model.Table).FirstOrDefault().Object)
+            if (controller.TablesOwned.Contains(model.Table))
             {
-                await firebase.Child($"controller{model.ControllerNum}").Child("dependent").Child($"controller{model.SentBy}").PutAsync(true);
-                if (model.DependentOn)
-                    await firebase.Child($"controller{model.ControllerNum}").Child("deadlock").PutAsync(true);
+                if (model.DependentOn || model.SentBy == model.ControllerName)
+                    await firebase.Child("controllers").Child($"{model.ControllerName}").Child("deadlock").PutAsync(true);
+                var dependent = controller.Dependent ?? new List<string>();
+                dependent.Add(model.SentBy);
+                await firebase.Child("controllers").Child($"{model.ControllerName}").Child("dependent").PutAsync(dependent.ToArray());
             }
         }
     }

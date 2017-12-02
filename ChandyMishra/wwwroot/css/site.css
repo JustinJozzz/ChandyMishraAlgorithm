@@ -33,3 +33,15 @@
         display: none;
     }
 }
+
+.controller {
+    margin: 5px;
+}
+
+.controllerSelect {
+    display: inline-block;
+}
+
+.tableSelect {
+    display: inline-block;
+}

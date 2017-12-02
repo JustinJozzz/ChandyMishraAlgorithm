@@ -7,13 +7,13 @@ namespace ChandyMishra.Models
 {
     public class ProbeModel
     {
-        public string ControllerNum;
+        public string ControllerName;
         public string Table;
         public string SentBy;
         public bool DependentOn;
-        public ProbeModel(string ControllerNum, string Table, string SentBy, bool DependentOn)
+        public ProbeModel(string ControllerName, string Table, string SentBy, bool DependentOn)
         {
-            this.ControllerNum = ControllerNum;
+            this.ControllerName = ControllerName;
             this.Table = Table;
             this.SentBy = SentBy;
             this.DependentOn = DependentOn;
