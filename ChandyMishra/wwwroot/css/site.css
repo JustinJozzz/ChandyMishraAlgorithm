@@ -38,10 +38,7 @@
     margin: 5px;
 }
 
-.controllerSelect {
-    display: inline-block;
-}
-
-.tableSelect {
-    display: inline-block;
+.ui-draggable {
+    text-align: center;
+    height: 25px;
 }

@@ -46,7 +46,7 @@
             $('#controllerList').html('<p>No Controllers Created Yet!</p>');
         } else {
             Object.keys(snap).forEach(function (key, index) {
-                $('#controllerList').append(`<div class="panel panel-default controllerEntry" id="${key}">${key}</div>`);
+                $('#controllerList').append(`<div class="panel panel-default controllerEntry" style="text-align:center;height:25px" id="${key}">${key}</div>`);
                 $(`#${key}`).draggable({
                     stack: '.controllerSelect',
                     cursor: 'move',
@@ -60,7 +60,7 @@
     function AddTables(snap) {
         $('#tableList').empty();
         Object.keys(snap).forEach(function (key, index) {
-            $('#tableList').append(`<div class="panel panel-default tableEntry" id="${key}">${key}</div>`);
+            $('#tableList').append(`<div class="panel panel-default tableEntry" style="text-align:center;height:25px" id="${key}">${key}</div>`);
             $(`#${key}`).draggable({
                 stack: '.tableSelect',
                 cursor: 'move',
@@ -78,7 +78,7 @@
         }
 
         for (var i = 0; i < count; i++) {
-            $('#selectList').append(`<div style="row"><div id="selectController${i}" class="panel panel-default controllerSelect">&nbsp;</div><span style="display:inline-block;padding:5px"> Will Check Out </span><div id="selectTable${i}" class="panel panel-default tableSelect">&nbsp;</div></div>`);
+            $('#selectList').append(`<div style="row"><div style="text-align:center;height:25px" id="selectController${i}" class="panel panel-default controllerSelect">&nbsp;</div><span style="display:inline-block;padding:5px"> Will Check Out </span><div id="selectTable${i}" class="panel panel-default tableSelect">&nbsp;</div></div>`);
             $(`#selectController${i}`).droppable({
                 accept: '.controllerEntry',
                 hoverClass: 'hovered',
@@ -135,14 +135,16 @@
                     "Postings": true,
                     "Friends": true
                 },
-                "controller1": {
-                    "deadlock": false
-                },
-                "controller2": {
-                    "deadlock": false
-                },
-                "controller3": {
-                    "deadlock": false
+                "controllers": {
+                    "controller1": {
+                        "deadlock": false
+                    },
+                    "controller2": {
+                        "deadlock": false
+                    },
+                    "controller3": {
+                        "deadlock": false
+                    }
                 }
             });
         });

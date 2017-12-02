@@ -44,40 +44,42 @@ namespace ChandyMishra.Controllers
                 bool tableAvailable = await firebase.Child("tables").Child($"{entry.Value}").OnceSingleAsync<bool>();
                 if(tableAvailable)
                 {
-                    var tablesOwned = allControllers[entry.Key].TablesOwned ?? new List<string>();
-                    tablesOwned.Add(entry.Value);
-                    await firebase.Child("controllers").Child($"{entry.Key}").Child("tablesOwned").PutAsync(tablesOwned.ToArray());
+                    allControllers[entry.Key].TablesOwned = allControllers[entry.Key].TablesOwned ?? new List<string>();
+                    allControllers[entry.Key].TablesOwned.Add(entry.Value);
                     await firebase.Child("tables").Child($"{entry.Value}").PutAsync(false);
                 }
                 else
                 {
-                    var dependent = allControllers[entry.Key].Dependent ?? new List<string>();
-
-                    foreach(var controller in allControllers)
+                    foreach(var controller in allControllers.Keys.ToArray())
                     {
-                        Probe(new ProbeModel(controller.Key, entry.Value, entry.Key, dependent.Contains(controller.Key)));
+                        allControllers[entry.Key].Dependent = allControllers[entry.Key].Dependent ?? new List<string>();
+                        allControllers[controller] = await Probe(
+                                new ProbeModel(allControllers[controller], entry.Value, entry.Key, allControllers[entry.Key].Dependent.Contains(controller))
+                            );
                     }
                 }
             }
+            await firebase.Child("controllers").PutAsync(allControllers);
         }
         [HttpGet]
         public IActionResult NewController(string ControllerName)
         {
             return ViewComponent("Controller", ControllerName);
         }
-        public async void Probe(ProbeModel model)
+        public async Task<ControllerModel> Probe(ProbeModel model)
         {
-            var controller = await firebase.Child("controllers").Child($"{model.ControllerName}").OnceSingleAsync<ControllerModel>();
-            var tablesOwned = controller.TablesOwned ?? new List<string>();
+            var controller = model.Controller;
+            controller.TablesOwned = controller.TablesOwned ?? new List<string>();
 
             if (controller.TablesOwned.Contains(model.Table))
             {
-                if (model.DependentOn || model.SentBy == model.ControllerName)
-                    await firebase.Child("controllers").Child($"{model.ControllerName}").Child("deadlock").PutAsync(true);
-                var dependent = controller.Dependent ?? new List<string>();
-                dependent.Add(model.SentBy);
-                await firebase.Child("controllers").Child($"{model.ControllerName}").Child("dependent").PutAsync(dependent.ToArray());
+                if (model.DependentOn || model.SentBy == controller.ControllerName)
+                    controller.Deadlock = true;
+                controller.Dependent = controller.Dependent ?? new List<string>();
+                controller.Dependent.Add(model.SentBy);
             }
+
+            return controller;
         }
     }
 }
