@@ -1,0 +1,47 @@
+﻿@model ChandyMishra.Models.ControllerModel
+
+<div class="panel panel-default col-sm-6 controller" style="display:inline-block;margin:5px;padding:0@(@Model.Deadlock ? ";background-color:rgba(255, 0, 0, 0.3)" : "")" id="@Model.ControllerName">
+    <div class="panel-heading" style="@(@Model.Deadlock ? "background-color:rgba(255, 0, 0, 0.3)" : "background-color:#fff")"><h2>@Model.GetTitle()</h2></div>
+    <div class="panel-body">
+        <h3>Deadlock: </h3>
+        <p class="deadlock">@Model.Deadlock.ToString()</p>
+        <h3 class="dependent">Waiting For: </h3>
+        @if (Model.WaitingFor == null)
+        {
+            <span>Not Waiting For Any Tables</span>
+        }
+        else
+        {
+            @foreach (string dep in Model.WaitingFor)
+            {
+                if (dep.Equals(Model.WaitingFor.Last()))
+                {
+                    <span>@dep</span>
+                }
+                else
+                {
+                    <span>@dep,</span>
+                }
+            }
+        }
+        <h3>Tables Owned: </h3>
+        @if (Model.TablesOwned == null)
+        {
+            <span>No Tables Checked Out</span>
+        }
+        else
+        {
+            @foreach (string table in Model.TablesOwned)
+            {
+                if (table.Equals(Model.TablesOwned.Last()))
+                {
+                    <span>@table</span>
+                }
+                else
+                {
+                    <span>@table,</span>
+                }
+            }
+        }
+    </div>
+</div>
